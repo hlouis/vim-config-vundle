@@ -37,9 +37,10 @@ Bundle 'EasyGrep'
 Bundle 'xptemplate'
 Bundle 'clang-complete'
 Bundle 'Tabular'
+Bundle 'Lokaltog/vim-powerline'
 
 " lua
-Bundle 'xolox/vim-lua-ftplugin'
+"Bundle 'xolox/vim-lua-ftplugin'
 
 " Make cd command only effect this tab
 Bundle 'kana/vim-tabpagecd'
@@ -187,7 +188,8 @@ syntax enable "Enable syntax hl
 " Set font according to system
 if MySys() == "mac"
 	"set gfn=Andale\ Mono:h14
-	set gfn=Envy\ Code\ R:h14
+	"set gfn=Envy\ Code\ R:h14
+	set gfn=Menlo\ Regular:h13
 	"set gfn=Inconsolata:h13
 	"set noantialias
 	set shell=/bin/zsh
@@ -208,7 +210,8 @@ if has("gui_running")
 	set background=dark
 	set t_Co=256
 	set background=dark
-	colorscheme wombat
+	colorscheme sonofobsidian
+	"colorscheme wombat
 	"colorscheme inkpot
 	"colorscheme desertEx
 	set nu
@@ -499,8 +502,7 @@ endtry
 set laststatus=2
 set showcmd
 " Format the statusline
-set statusline=\ %F%m%r%h\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ %l/%L:%c
-
+"set statusline=\ %F%m%r%h\ %w\ \ CWD:\ %r%{CurDir()}%h\ \ \ Line:\ %l/%L:%c
 
 function! CurDir()
 	let curdir = substitute(getcwd(), $HOME, "~/", "g")
@@ -733,6 +735,7 @@ let NERD_cpp_alt_style=1
 " ver 4.1.0
 let g:NERDTreeIgnore=['\~$', '\.lo$', '\.o$', 'tags', '\.dSYM$', 'cscope\.']
 let g:NERDTreeWinPos="left"
+let g:NERDTreeShowBookmarks=1
 nnoremap <silent> <leader>nt :NERDTreeToggle<CR>
 nnoremap <silent> <leader>nc :call NERDTreeCurrentDir()<CR>
 
@@ -779,6 +782,7 @@ map <leader>ff :FufFile<CR>
 map <leader>fc :FufCoverageFile<CR>
 map <leader>fb :FufBuffer<CR>
 map <leader>ft :FufBufferTag<CR>
+map <leader>fat :FufTag<CR>
 map <leader>fm :FufMruFile<CR>
 
 "try
@@ -831,6 +835,11 @@ nmap <leader>a= :Tabularize /=<CR>
 vmap <leader>a= :Tabularize /=<CR>
 nmap <leader>a: :Tabularize /:\zs<CR>
 vmap <leader>a: :Tabularize /:\zs<CR>
+
+" vim-powerline
+let g:Powerline_symbols = 'unicode'
+"let g:Powerline_theme = 'solarized256'
+"let g:Powerline_colorscheme = 'solarized256'
 
 " vim-ft-lua ****************************************************************
 let g:lua_compiler_name = '/opt/local/bin/luac'
