@@ -10,24 +10,26 @@ call vundle#rc()
 " let Vundle manage Vundle
 " required! 
 Bundle 'gmarik/vundle'
+"Bundle 'csv.vim'
 
-" original repos on github
+" use to control git in vim
 Bundle 'tpope/vim-fugitive'
+" use to control montion in easiser way
 Bundle 'Lokaltog/vim-easymotion'
+" make wirte html more robust
 Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
 Bundle 'tpope/vim-rails.git'
 " vim-scripts repos
 Bundle 'L9'
+" only fix a bug under mac
 Bundle 'hlouis/FuzzyFinder'
 "Bundle 'FuzzyFinder'
 Bundle 'SuperTab-continued.'
 Bundle 'The-NERD-tree'
-Bundle 'AutoClose--Alves'
 Bundle 'auto_mkdir'
+" use to auto detcet corrent file encoding
 Bundle 'FencView.vim'
-"Bundle 'jsbeautify'
 Bundle 'Mark'
-Bundle 'mru.vim'
 Bundle 'The-NERD-Commenter'
 Bundle 'restart.vim'
 Bundle 'Tagbar'
@@ -35,7 +37,7 @@ Bundle 'css_color.vim'
 Bundle 'a.vim'
 Bundle 'EasyGrep'
 Bundle 'xptemplate'
-Bundle 'clang-complete'
+"Bundle 'clang-complete'
 Bundle 'Tabular'
 Bundle 'Lokaltog/vim-powerline'
 
@@ -45,7 +47,7 @@ Bundle 'Lokaltog/vim-powerline'
 " Make cd command only effect this tab
 Bundle 'kana/vim-tabpagecd'
 
-" syntax
+" as3 syntax
 Bundle 'actionscript.vim--Cuss'
 
 " Color
@@ -706,9 +708,9 @@ noremap <Leader>rm mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 " XPTemplate ******************************************************************
 "let g:xptemplate_always_show_pum = 1
 " xpt uses <Tab> as trigger key
-let g:xptemplate_key = '<Tab>'
+"let g:xptemplate_key = '<Tab>'
 " if nothing matched in xpt, try supertab
-let g:xptemplate_fallback = '<Plug>SuperTabForward'
+"let g:xptemplate_fallback = '<Plug>SuperTabForward'
 let g:xptemplate_highlight = 'following,next'
 "let g:xptemplate_bundle = 'c_*,cpp_*' 
 let g:xptemplate_brace_complete = '([{"'
@@ -717,13 +719,13 @@ let g:xptemplate_pum_tab_nav = 1
 " Omni Completion *************************************************************
 " http://www.vim.org/scripts/script.php?script_id=1520
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-"autocmd FileType html :set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType html :set omnifunc=htmlcomplete#CompleteTags
 "autocmd FileType python set omnifunc=pythoncomplete#Complete
 "autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 "autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 "autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
 "autocmd FileType php set omnifunc=phpcomplete#CompletePHP
-"autocmd FileType c set omnifunc=ccomplete#Complete
+autocmd FileType c set omnifunc=ccomplete#Complete
 
 " NERTCommenter
 let NERD_c_alt_style=1
@@ -840,6 +842,19 @@ vmap <leader>a: :Tabularize /:\zs<CR>
 let g:Powerline_symbols = 'unicode'
 "let g:Powerline_theme = 'solarized256'
 "let g:Powerline_colorscheme = 'solarized256'
+
+" csv.vim
+" auto range line from 3 to end of file
+"aug CSV_Editing
+	"au!
+	"au BufRead,BufWritePost *.csv :3,$ArrangeColumn
+	"au BufWritePre *.csv :%UnArrangeColumn
+"aug end
+"let g:csv_highlight_column = 'y'
+
+" sparkup *******************************************************************
+let g:sparkupExecuteMapping='<D-e>'
+let g:sparkupNextMapping='<D-r>'
 
 " vim-ft-lua ****************************************************************
 let g:lua_compiler_name = '/opt/local/bin/luac'
