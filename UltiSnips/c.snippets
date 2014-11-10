@@ -1,27 +1,21 @@
-XPTemplate priority=personal
-
-XPT fcomment
+snippet /** "function sexy comment" !b
 /**
- * `cursor^
- * @param `param^
- * @return `int^ `desc^
+ * $0
  */
+endsnippet
 
-
-XPT filehead
-XSET cursor|pre=CURSOR
+snippet fh "File header" !b
 /****************************************************************//**
- * @file	`file()^
- * @date	`date()^
- * @author	`$author^ | `$email^
- * @note	`cursor^	
+ * @file	main.c
+ * @date	`date +%Y`.`date +%m`.`date +%d`
+ * @author	Louis Huang | louis.huang@yqidea.com
+ * @note	$0
  *
  * This software is supplied under the terms of a license
  * agreement or nondisclosure agreement with YQIdea and may
  * not be copied or disclosed except in accordance with the
  * terms of that agreement.
  *
- * `strftime("%Y")^ YQidea.com All Rights Reserved.
+ * `date +%Y` YQidea.com All Rights Reserved.
  *******************************************************************/
-
-..XPT
+endsnippet

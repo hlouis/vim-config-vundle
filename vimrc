@@ -10,36 +10,62 @@ call vundle#rc()
 " let Vundle manage Vundle
 " required! 
 Bundle 'gmarik/vundle'
+Bundle 'nginx.vim'
 "Bundle 'csv.vim'
+Bundle 'jdonaldson/vaxe'
 
 " use to control git in vim
 Bundle 'tpope/vim-fugitive'
 " use to control montion in easiser way
 Bundle 'Lokaltog/vim-easymotion'
 " make wirte html more robust
-Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
+"Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
+Bundle 'mattn/emmet-vim'
 Bundle 'tpope/vim-rails.git'
 " vim-scripts repos
 Bundle 'L9'
 " only fix a bug under mac
-Bundle 'hlouis/FuzzyFinder'
+"Bundle 'hlouis/FuzzyFinder'
 "Bundle 'FuzzyFinder'
-Bundle 'SuperTab-continued.'
+Bundle 'kien/ctrlp.vim'
+"Bundle 'SuperTab-continued.'
 Bundle 'The-NERD-tree'
 Bundle 'auto_mkdir'
+"Bundle 'ShowMarks'
+
 " use to auto detcet corrent file encoding
 Bundle 'FencView.vim'
 Bundle 'Mark'
 Bundle 'The-NERD-Commenter'
 Bundle 'restart.vim'
+" show tag at right side
 Bundle 'Tagbar'
 Bundle 'css_color.vim'
+" jump to head or source file for current buffer
 Bundle 'a.vim'
 Bundle 'EasyGrep'
-Bundle 'xptemplate'
-"Bundle 'clang-complete'
-Bundle 'Tabular'
+
+" replace xptemplate with ultsnips
+"Bundle 'xptemplate'
+Bundle 'SirVer/ultisnips'
+" Snippets are separated from the engine. Add this if you want them:
+Plugin 'honza/vim-snippets'
+
+" follow https://github.com/plasticboy/vim-markdown to install markdown support
+Plugin 'godlygeek/tabular'
+Plugin 'plasticboy/vim-markdown'
+
 Bundle 'Lokaltog/vim-powerline'
+
+"complete plugin
+"Bundle 'Rip-Rip/clang_complete'
+"Bundle 'rkowal/Lua-Omni-Vim-Completion'
+Bundle 'Valloric/YouCompleteMe'
+Bundle 'scrooloose/syntastic'
+
+" for auto generate tags
+Plugin 'xolox/vim-misc'
+Plugin 'xolox/vim-easytags'
 
 " lua
 "Bundle 'xolox/vim-lua-ftplugin'
@@ -47,8 +73,9 @@ Bundle 'Lokaltog/vim-powerline'
 " Make cd command only effect this tab
 Bundle 'kana/vim-tabpagecd'
 
-" as3 syntax
+" syntax
 Bundle 'actionscript.vim--Cuss'
+Bundle 'scons.vim'
 
 " Color
 Bundle 'desert256.vim'
@@ -57,6 +84,17 @@ Bundle 'Impact'
 Bundle 'inkpot'
 Bundle 'Wombat'
 Bundle 'Son-of-Obisidian'
+Bundle 'Zenburn'
+Bundle 'twilight'
+Bundle 'Solarized'
+Bundle '29decibel/codeschool-vim-theme'
+Bundle 'tomasr/molokai'
+Bundle 'w0ng/vim-hybrid'
+
+" for jade template language
+Bundle 'digitaltoad/vim-jade'
+" for css less
+Bundle 'groenewege/vim-less'
 
 filetype plugin indent on     " required! 
 "
@@ -77,6 +115,10 @@ set history=300
 
 " set vim search tags file from current dir and up to the root
 set tags=tags;/
+
+" set formatoption:
+set formatoptions=cqrnmB
+set textwidth=80
 
 " Enable filetype plugin
 filetype on
@@ -142,6 +184,9 @@ function! MySys()
     endif
 endfunction
 
+" Put the cursor at the end when yanked
+vmap y y`]
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
@@ -166,7 +211,7 @@ set mat=2 "How many tenths of a second to blink
 
 " No sound on errors
 set noerrorbells
-set novisualbell
+set visualbell
 set t_vb=
 
 " Window split
@@ -189,10 +234,11 @@ syntax enable "Enable syntax hl
 
 " Set font according to system
 if MySys() == "mac"
-	"set gfn=Andale\ Mono:h14
-	"set gfn=Envy\ Code\ R:h14
-	set gfn=Menlo\ Regular:h13
-	"set gfn=Inconsolata:h13
+	"set gfn=Andale\ Mono:h12
+	"set gfn=Envy\ Code\ R:h12
+	"set gfn=Menlo\ Regular:h12
+	set gfn=PT\ Mono:h13
+	"set gfn=M+\ 1m\ Regular:h14
 	"set noantialias
 	set shell=/bin/zsh
 
@@ -208,14 +254,14 @@ elseif MySys() == "linux"
 endif
 
 if has("gui_running")
-	set guioptions-=T
+	set guioptions-=TRrLl
 	set background=dark
 	set t_Co=256
 	set background=dark
-	colorscheme sonofobsidian
+	colorscheme hybrid
+	"colorscheme sonofobsidian
 	"colorscheme wombat
 	"colorscheme inkpot
-	"colorscheme desertEx
 	set nu
 else
 	colorscheme desert
@@ -255,6 +301,11 @@ set noswapfile
 autocmd FileType html :set filetype=xhtml " we couldn't care less about html
 autocmd BufNewFile,BufRead *.as :set filetype=actionscript " change as from altas to actionscript.
 autocmd BufNewFile,BufRead *.dox :set filetype=doxygen " define dox file as doxygen file
+autocmd BufNewFile,BufRead SConstruct :set filetype=scons " define scons
+
+" set html and jade use space to indention
+autocmd FileType html :setlocal shiftwidth=2 tabstop=2 expandtab
+autocmd FileType jade :setlocal shiftwidth=2 tabstop=2 expandtab
 
 " When editing a file, always jump to the last known cursor position.
 " Don't do it when the position is invalid or when inside an event handler
@@ -341,8 +392,13 @@ cno $q <C-\>eDeleteTillSlash()<cr>
 " Move
 inoremap <C-a> <Home>
 inoremap <C-e> <End>
-"inoremap <C-p> <Up>
-"inoremap <C-n> <Down>
+"inoremap <C-k> <Up>
+"inoremap <C-j> <Down>
+
+" Ctrl enter, open new line above
+inoremap <C-CR> <Esc><S-O>
+" Shift enter, open new line blew
+inoremap <S-CR> <End><CR>
 inoremap <C-b> <Left>
 inoremap <C-f> <Right>
 inoremap <M-b> <C-o>b
@@ -356,8 +412,8 @@ inoremap <C-k> <Esc><Right>C
 inoremap <C-d> <Esc><Right>s
 inoremap <M-d> <C-o>de
 
-cnoremap <C-P> <Up>
-cnoremap <C-N> <Down>
+cnoremap <C-j> <Up>
+cnoremap <C-k> <Down>
 
 func! Cwd()
 	let cwd = getcwd()
@@ -563,14 +619,30 @@ endfunc
 autocmd BufWrite *.py :call DeleteTrailingWS()
 
 " Professor VIM says '87% of users prefer jj over esc', jj abrams strongly disagrees
-imap ,, <Esc>
+" imap jj <Esc>
 " awesome, inserts new line without going into insert mode
 map <C-Enter> O<ESC>
 map <S-Enter> o<ESC>
 
+" Move cursor in command line mode more like terminal
+cnoremap <C-a>  <Home>
+cnoremap <C-b>  <Left>
+cnoremap <C-f>  <Right>
+cnoremap <C-d>  <Delete>
+cnoremap <M-b>  <S-Left>
+cnoremap <M-f>  <S-Right>
+cnoremap <M-d>  <S-right><Delete>
+cnoremap <Esc>b <S-Left>
+cnoremap <Esc>f <S-Right>
+cnoremap <Esc>d <S-right><Delete>
+
 " Move cursor to line end or begin in insert mode
 imap <C-e> <esc>$a
 imap <C-a> <esc>$I
+
+" Move cursor in wrap line
+nnoremap j gj
+nnoremap k gk
 
 " Make cursor move by visual lines instead of file lines (when wrapping)
 "map <up> gk
@@ -587,8 +659,8 @@ imap <C-a> <esc>$I
 " Do :help cope if you are unsure what cope is. It's super useful!
 map <leader>qc :botright cope<cr>
 map <leader>qn :cn<cr>
-map <C-N> :cn<cr>
-map <C-P> :cp<cr>
+map <C-n> :cn<cr>
+map <C-p> :cp<cr>
 
 """"""""""""""""""""""""""""""
 " => bufExplorer plugin
@@ -710,10 +782,10 @@ noremap <Leader>rm mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 " xpt uses <Tab> as trigger key
 "let g:xptemplate_key = '<Tab>'
 " if nothing matched in xpt, try supertab
-"let g:xptemplate_fallback = '<Plug>SuperTabForward'
+let g:xptemplate_fallback = '<Plug>SuperTabForward'
 let g:xptemplate_highlight = 'following,next'
 "let g:xptemplate_bundle = 'c_*,cpp_*' 
-let g:xptemplate_brace_complete = '([{"'
+let g:xptemplate_brace_complete = 1
 let g:xptemplate_pum_tab_nav = 1
 
 " Omni Completion *************************************************************
@@ -728,18 +800,19 @@ autocmd FileType html :set omnifunc=htmlcomplete#CompleteTags
 autocmd FileType c set omnifunc=ccomplete#Complete
 
 " NERTCommenter
-let NERD_c_alt_style=1
-let NERD_cpp_alt_style=1
+"let NERD_c_alt_style=1
+"let NERD_cpp_alt_style=1
 
 
 " NERDTree ********************************************************************
 " http://www.vim.org/scripts/script.php?script_id=1658
 " ver 4.1.0
-let g:NERDTreeIgnore=['\~$', '\.lo$', '\.o$', 'tags', '\.dSYM$', 'cscope\.']
+let g:NERDTreeIgnore=['\~$', '\.meta$', '\.lo$', '\.o$', '^tags$', '\.dSYM$', 'cscope\.', '^.*_temp$']
 let g:NERDTreeWinPos="left"
 let g:NERDTreeShowBookmarks=1
 nnoremap <silent> <leader>nt :NERDTreeToggle<CR>
 nnoremap <silent> <leader>nc :call NERDTreeCurrentDir()<CR>
+nnoremap <silent> <leader>nf :NERDTreeFind<CR>
 
 function! NERDTreeCurrentDir()
 	let s:cwd = getcwd()
@@ -776,16 +849,16 @@ nmap <silent> <leader>sr :call ReloadSnippets(snippets_dir, &filetype)<CR>
 " Fuzzyfinder *****************************************************************
 " http://www.vim.org/scripts/script.php?script_id=1984
 " ver 3.5
-let g:fuf_modesDisable = [ ]
-let g:fuf_buffertag_ctagsPath = '/opt/local/bin/ctags'
+"let g:fuf_modesDisable = [ ]
+"let g:fuf_buffertag_ctagsPath = '/opt/local/bin/ctags'
 "let g:fuf_previewHeight = 0		" disable preview
 "let g:fuf_keyPreview = '<C-]>'
-map <leader>ff :FufFile<CR>
-map <leader>fc :FufCoverageFile<CR>
-map <leader>fb :FufBuffer<CR>
-map <leader>ft :FufBufferTag<CR>
-map <leader>fat :FufTag<CR>
-map <leader>fm :FufMruFile<CR>
+"map <leader>ff :FufFile<CR>
+"map <leader>fc :FufCoverageFile<CR>
+"map <leader>fb :FufBuffer<CR>
+"map <leader>ft :FufBufferTag<CR>
+"map <leader>fat :FufTag<CR>
+"map <leader>fm :FufMruFile<CR>
 
 "try
 	"call fuf#defineLaunchCommand('FufCWD', 'file', 'fnamemodify(getcwd(), ''%:p:h'')')
@@ -805,6 +878,10 @@ let g:alternateSearchPath = 'sfr:../source,sfr:../src,sfr:../include,sfr:../inc,
 
 " EasyGrep ********************************************************************
 let g:EasyGrepMode = 2
+" use mac grep with easygrep
+set grepprg=grep\ -nH\ $*
+let g:EasyGrepCommand = 1
+let g:EasyGrepRecursive = 1
 
 " minibufexpl ****************************************************************
 let g:miniBufExplSplitBelow = 0 " mini buf window will apear above.
@@ -818,18 +895,28 @@ let g:miniBufExplMaxSize = 2 " max display 2 line.
 " ver: 1.90
 
 " tagbar     ****************************************************************
-let g:tagbar_ctags_bin = '/opt/local/bin/ctags'
+let g:tagbar_ctags_bin = '/usr/local/bin/ctags'
 let g:tagbar_autoshowtag = 1
 let g:tagbar_autofocus = 1
 nnoremap <leader>to :TagbarOpen<CR>
 nnoremap <leader>tt :TagbarToggle<CR>
 nnoremap <leader>ta :TagbarOpenAutoClose<CR>
 
+let g:tagbar_type_javascript = {
+    \ 'ctagstype' : 'JavaScript',
+    \ 'kinds'     : [
+        \ 'o:objects',
+        \ 'f:functions',
+        \ 'a:arrays',
+        \ 's:strings'
+    \ ]
+\ }
+
 " supertab 	 ****************************************************************
 " http://www.vim.org/scripts/script.php?script_id=1643
 " ver: 1.0
 let g:SuperTabDefaultCompletionType = "context"
-let g:SuperTabContextDefaultCompletionType = "<c-n>"
+let g:SuperTabContextDefaultCompletionType = "<c-j>"
 
 " tabular *******************************************************************
 " map some usefule tabularize with = and :
@@ -839,7 +926,8 @@ nmap <leader>a: :Tabularize /:\zs<CR>
 vmap <leader>a: :Tabularize /:\zs<CR>
 
 " vim-powerline
-let g:Powerline_symbols = 'unicode'
+"let g:Powerline_symbols = 'unicode'
+let g:Powerline_symbols = 'compatible'
 "let g:Powerline_theme = 'solarized256'
 "let g:Powerline_colorscheme = 'solarized256'
 
@@ -852,9 +940,79 @@ let g:Powerline_symbols = 'unicode'
 "aug end
 "let g:csv_highlight_column = 'y'
 
+" clang complete ************************************************************
+" hightlight error for warnings and errors
+"let g:clang_hl_errors = 1
+" open quick fix window on error
+"let g:clang_complete_copen = 1
+" make function parentheses/paramters complete
+"let g:clang_snippets = 1
+"let g:clang_snippets_engine = 'clang_complete'
+
+set conceallevel=2
+set concealcursor=inv
+"let g:clang_snippets=1
+"let g:clang_conceal_snippets=1
+" The single one that works with clang_complete
+"let g:clang_snippets_engine='clang_complete'
+"let g:clang_trailing_placeholder=1
+
+" Complete options (disable preview scratch window, longest removed to aways
+" show menu)
+"set completeopt=menu,longest
+set completeopt=menu,menuone
+
+" Limit popup menu height
+"set pumheight=20
+
+" SuperTab completion fall-back 
+"let g:SuperTabDefaultCompletionType='<c-x><c-u><c-p>'
+
+" YouCompleteMe *************************************************************
+"let g:ycm_key_invoke_completion = '<leader><tab>'
+
+" syntastic *****************************************************************
+" ultsnips ******************************************************************
+let g:UltiSnipsEditSplit='vertical'
+"let g:UltiSnipsSnippetsDir="~/.vim/bundle/ultisnips/UltiSnips"
+"let g:UltiSnipsSnippetDirectories=["UltiSnips"]
+
+let g:UltiSnipsExpandTrigger="<leader><tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+
+" CtrlP *********************************************************************
+let g:ctrlp_map = '<Leader>ff'
+let g:ctrlp_custom_ignore = '\v\~$|\.(o|swp|pyc|wav|mp3|so|blend)$|(^|[/\\])\.(hg|git|bzr|dSYM)($|[/\\])|__init__\.py'
+" don't use nearest git root dir for searching dir
+let g:ctrlp_working_path_mode = 'w'
+let g:ctrlp_dotfiles = 0
+let g:ctrlp_switch_buffer = 0
+let g:ctrlp_max_height = 15
+let g:ctrlp_extensions = ['tag', 'buffertag', 'mixed', 'bookmarkdir']
+
+map <leader>fb :CtrlPBuffer<CR>
+map <leader>ft :CtrlPBufTag<CR>
+map <leader>fa :CtrlPTag<CR>
+map <leader>fm :CtrlPMRUFiles<CR>
+
+" set actionscript ctags param
+let g:ctrlp_buftag_types = {
+			\ 'erlang'     : '--language-force=erlang --erlang-types=drmf',
+			\ 'actionscript'   : '',
+			\ }
+
+" vim-markdown **************************************************************
+let g:vim_markdown_folding_disabled=1
+
+" vim-easytags **************************************************************
+" Let easytags use project's tags file
+let g:easytags_dynamic_files = 1
+let g:easytags_async = 1
+
 " sparkup *******************************************************************
-let g:sparkupExecuteMapping='<D-e>'
-let g:sparkupNextMapping='<D-r>'
+"let g:sparkupExecuteMapping='<D-e>'
+"let g:sparkupNextMapping='<D-r>'
 
 " vim-ft-lua ****************************************************************
-let g:lua_compiler_name = '/opt/local/bin/luac'
+"let g:lua_compiler_name = '/opt/local/bin/luac'

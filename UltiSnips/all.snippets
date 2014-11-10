@@ -1,0 +1,12 @@
+snippet title "Titelize in the Transformation"
+${1:a text}
+${1/\w+\s*/\u$0/g}
+endsnippet
+
+snippet date
+${2:${1:`date +%Y`}.`date +%m`}.`date +%d`
+endsnippet
+
+snippet todo "Insert toto format at any file type"
+@TODO $0 `echo $USER`@`date +%Y`.`date +%m`.`date +%d`
+endsnippet

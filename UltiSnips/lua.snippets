@@ -1,0 +1,28 @@
+snippet if "if test" !b
+if $1 then
+	$0
+end
+endsnippet
+
+snippet fh "File head" !b
+-----------------------------------------------------------------//--
+-- @file	`!v expand('%:t')`
+-- @date	`date +%Y`.`date +%m`.`date +%d`
+-- @author	Louis Huang | louis.huang@yqidea.com
+-- @note	$0
+--
+-- This software is supplied under the terms of a license
+-- agreement or nondisclosure agreement with YQIdea and may
+-- not be copied or disclosed except in accordance with the
+-- terms of that agreement.
+--
+-- `date +%Y` YQidea.com All Rights Reserved.
+--------------------------------------------------------------------/
+
+endsnippet
+
+snippet box "Make a comment box for lua" !b
+-----------------------------------------------------------------//--
+-- $0
+-----------------------------------------------------------------//--
+endsnippet
