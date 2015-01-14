@@ -129,6 +129,10 @@ set modeline
 " Set to auto read when a file is changed from the outside
 set autoread
 
+" Auto use relative line number when use quit insert mode
+autocmd InsertEnter * :set norelativenumber
+autocmd InsertLeave * :set relativenumber
+
 " With a map leader it's possible to do extra key combinations
 " like <leader>w saves the current file
 let mapleader = ","
@@ -972,6 +976,10 @@ set completeopt=menu,menuone
 "let g:ycm_key_invoke_completion = '<leader><tab>'
 
 " syntastic *****************************************************************
+let g:syntastic_error_symbol = "✗"
+let g:syntastic_warning_symbol = "⚠"
+let g:syntastic_always_populate_loc_list = 1
+
 " ultsnips ******************************************************************
 let g:UltiSnipsEditSplit='vertical'
 "let g:UltiSnipsSnippetsDir="~/.vim/bundle/ultisnips/UltiSnips"
