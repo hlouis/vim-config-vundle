@@ -12,7 +12,10 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 Bundle 'nginx.vim'
 "Bundle 'csv.vim'
-Bundle 'jdonaldson/vaxe'
+Plugin 'fatih/vim-go'
+Plugin 'Raimondi/delimitMate' " auto complete paired items
+
+"Bundle 'jdonaldson/vaxe' " for HAXE
 
 " use to control git in vim
 Bundle 'tpope/vim-fugitive'
@@ -27,7 +30,8 @@ Bundle 'L9'
 " only fix a bug under mac
 "Bundle 'hlouis/FuzzyFinder'
 "Bundle 'FuzzyFinder'
-Bundle 'kien/ctrlp.vim'
+" Bundle 'kien/ctrlp.vim'
+Bundle 'ctrlpvim/ctrlp.vim'
 "Bundle 'SuperTab-continued.'
 Bundle 'The-NERD-tree'
 Bundle 'auto_mkdir'
@@ -64,11 +68,13 @@ Bundle 'Valloric/YouCompleteMe'
 Bundle 'scrooloose/syntastic'
 
 " for auto generate tags
-Plugin 'xolox/vim-misc'
-Plugin 'xolox/vim-easytags'
+"Plugin 'xolox/vim-misc'
+"Plugin 'xolox/vim-easytags'
+"Plugin 'xolox/vim-session'
 
 " lua
 "Bundle 'xolox/vim-lua-ftplugin'
+Bundle 'raymond-w-ko/vim-lua-indent'
 
 " Make cd command only effect this tab
 Bundle 'kana/vim-tabpagecd'
@@ -90,6 +96,8 @@ Bundle 'Solarized'
 Bundle '29decibel/codeschool-vim-theme'
 Bundle 'tomasr/molokai'
 Bundle 'w0ng/vim-hybrid'
+Bundle 'google/vim-colorscheme-primary'
+Bundle 'NLKNguyen/papercolor-theme'
 
 " for jade template language
 Bundle 'digitaltoad/vim-jade'
@@ -191,6 +199,8 @@ endfunction
 " Put the cursor at the end when yanked
 vmap y y`]
 
+" set gui tab to [index], filename, modify flag
+set guitablabel=\[%N\]\ %t\ %M
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
@@ -241,7 +251,9 @@ if MySys() == "mac"
 	"set gfn=Andale\ Mono:h12
 	"set gfn=Envy\ Code\ R:h12
 	"set gfn=Menlo\ Regular:h12
-	set gfn=PT\ Mono:h13
+	"set gfn=PT\ Mono:h13
+	set gfn=Source\ Code\ Pro\ Light:h13
+
 	"set gfn=M+\ 1m\ Regular:h14
 	"set noantialias
 	set shell=/bin/zsh
@@ -250,6 +262,10 @@ if MySys() == "mac"
 	"set noimd
 	"set imi=2
 	"set ims=0
+	
+	" fix git pull git-sh-setup no such file bug
+	set shell=/bin/bash\ -l
+
 elseif MySys() == "windows"
 	set gfn=Envy_Code_R:h10
 elseif MySys() == "linux"
@@ -258,13 +274,16 @@ elseif MySys() == "linux"
 endif
 
 if has("gui_running")
-	set guioptions-=TRrLl
+	"set guioptions-=TRrLl
+	"set background=dark
+	"set t_Co=256
 	set background=dark
-	set t_Co=256
-	set background=dark
-	colorscheme hybrid
-	"colorscheme sonofobsidian
 	"colorscheme wombat
+	"colorscheme molokai
+	colorscheme PaperColor
+	"colorscheme molokai
+	"colorscheme hybrid
+	"colorscheme sonofobsidian
 	"colorscheme inkpot
 	set nu
 else
@@ -292,6 +311,9 @@ set ffs=unix,dos,mac "Default file types
 
 "Change current buffer encoding to cp936 (default is utf-8)
 nmap <leader>fcn :set fileencoding=cp936<CR>
+
+" When macvim window close, lost the focus
+"au VimLeave * maca hide:
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Files and backups
@@ -337,7 +359,7 @@ set wrap "Wrap lines
 
 map <leader>t2 :setlocal shiftwidth=2<cr>
 map <leader>t4 :setlocal shiftwidth=4<cr>
-map <leader>t8 :setlocal shiftwidth=4<cr>
+map <leader>t8 :setlocal shiftwidth=8<cr>
 
 
 """"""""""""""""""""""""""""""
@@ -768,8 +790,8 @@ endfunction
 " => Vim grep
 """"""""""""""""""""""""""""""
 let Grep_Skip_Dirs = 'RCS CVS SCCS .svn generated .git'
-set grepprg=/bin/grep\ -nH
-
+"set grepprg=/bin/grep\ -nH
+"let g:ackprg = 'ag --vimgrep'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => MISC
@@ -834,8 +856,8 @@ nnoremap <silent> <F6> :TlistToggle<CR>
 " http://www.vim.org/scripts/script.php?script_id=2540
 " ver 0.83
 let g:snips_author = "Louis Huang"
-let g:snips_company = "YQIdea"
-let g:snips_email = "louis.huang@yqidea.com"
+let g:snips_company = "XY3D"
+let g:snips_email = "hly@xy3d.mobi"
 
 function! ReloadSnippets( snippets_dir, ft )
 	if strlen( a:ft ) == 0
@@ -886,6 +908,7 @@ let g:EasyGrepMode = 2
 set grepprg=grep\ -nH\ $*
 let g:EasyGrepCommand = 1
 let g:EasyGrepRecursive = 1
+let g:EasyGrepSearchCurrentBufferDir = 0
 
 " minibufexpl ****************************************************************
 let g:miniBufExplSplitBelow = 0 " mini buf window will apear above.
@@ -914,6 +937,34 @@ let g:tagbar_type_javascript = {
         \ 'a:arrays',
         \ 's:strings'
     \ ]
+\ }
+
+let g:tagbar_type_go = {
+    \ 'ctagstype' : 'go',
+    \ 'kinds'     : [
+        \ 'p:package',
+        \ 'i:imports:1',
+        \ 'c:constants',
+        \ 'v:variables',
+        \ 't:types',
+        \ 'n:interfaces',
+        \ 'w:fields',
+        \ 'e:embedded',
+        \ 'm:methods',
+        \ 'r:constructor',
+        \ 'f:functions'
+    \ ],
+    \ 'sro' : '.',
+    \ 'kind2scope' : {
+        \ 't' : 'ctype',
+        \ 'n' : 'ntype'
+    \ },
+    \ 'scope2kind' : {
+        \ 'ctype' : 't',
+        \ 'ntype' : 'n'
+    \ },
+    \ 'ctagsbin'  : 'gotags',
+    \ 'ctagsargs' : '-sort -silent'
 \ }
 
 " supertab 	 ****************************************************************
@@ -998,6 +1049,19 @@ let g:ctrlp_dotfiles = 0
 let g:ctrlp_switch_buffer = 0
 let g:ctrlp_max_height = 15
 let g:ctrlp_extensions = ['tag', 'buffertag', 'mixed', 'bookmarkdir']
+let g:ctrlp_regexp = 1
+
+" The Silver Searcher
+if executable('ag')
+	" Use ag over grep
+	"set grepprg=ag\ --nogroup\ --nocolor
+
+	" Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+	let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+
+	" ag is fast enough that CtrlP doesn't need to cache
+	let g:ctrlp_use_caching = 0
+endif
 
 map <leader>fb :CtrlPBuffer<CR>
 map <leader>ft :CtrlPBufTag<CR>
@@ -1007,7 +1071,7 @@ map <leader>fm :CtrlPMRUFiles<CR>
 " set actionscript ctags param
 let g:ctrlp_buftag_types = {
 			\ 'erlang'     : '--language-force=erlang --erlang-types=drmf',
-			\ 'actionscript'   : '',
+			\ 'go' : '--language-force=go --golang-types=ftv',
 			\ }
 
 " vim-markdown **************************************************************
@@ -1024,3 +1088,6 @@ let g:easytags_async = 1
 
 " vim-ft-lua ****************************************************************
 "let g:lua_compiler_name = '/opt/local/bin/luac'
+
+" vim-go ********************************************************************
+let g:go_fmt_command = "goimports"
