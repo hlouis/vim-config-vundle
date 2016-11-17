@@ -21,6 +21,11 @@ snippet fhl "File head long" !b
 
 endsnippet
 
+snippet req "Require" !b
+local $1$2 = require "${1:name}"
+$0
+endsnippet
+
 snippet shield "Shield service start" !b
 local shield = require "shield"
 

@@ -1,0 +1,25 @@
+snippet class "Class" b
+class $1 {
+	$0
+}
+endsnippet
+
+snippet ec "export class" b
+export class $1 {
+	$0
+}
+endsnippet
+
+snippet import "Import from lib" b
+import { $1 } from '${2:@angular/core}';
+$0
+endsnippet
+
+snippet com "Define an component" b
+@Component({
+	selector: '${1:my-app}',
+	template: \`
+		${2:<h1>{{title}}</h1>}
+	\`
+})
+endsnippet

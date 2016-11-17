@@ -59,7 +59,9 @@ Plugin 'honza/vim-snippets'
 Plugin 'godlygeek/tabular'
 Plugin 'plasticboy/vim-markdown'
 
-Bundle 'Lokaltog/vim-powerline'
+" Bundle 'Lokaltog/vim-powerline'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 
 "complete plugin
 "Bundle 'Rip-Rip/clang_complete'
@@ -81,7 +83,10 @@ Bundle 'kana/vim-tabpagecd'
 
 " syntax
 Bundle 'actionscript.vim--Cuss'
+Bundle 'cespare/vim-toml'
 Bundle 'scons.vim'
+Bundle 'leafgarland/typescript-vim'
+Bundle 'haproxy'
 
 " Color
 Bundle 'desert256.vim'
@@ -93,11 +98,14 @@ Bundle 'Son-of-Obisidian'
 Bundle 'Zenburn'
 Bundle 'twilight'
 Bundle 'Solarized'
+let g:solarized_contrast = 'high'
 Bundle '29decibel/codeschool-vim-theme'
 Bundle 'tomasr/molokai'
 Bundle 'w0ng/vim-hybrid'
 Bundle 'google/vim-colorscheme-primary'
 Bundle 'NLKNguyen/papercolor-theme'
+Bundle 'rakr/vim-two-firewatch'
+let g:PaperColor_Light_Override = { 'background' : '#efefef' }
 
 " for jade template language
 Bundle 'digitaltoad/vim-jade'
@@ -178,7 +186,7 @@ endif
 
 " Test current OS
 if (has("win32") || has("win64") || has("win32unix"))
-    let g:isWin = 1
+	let g:isWin = 1
 else
     let g:isWin = 0
 endif
@@ -188,12 +196,11 @@ function! MySys()
         return "windows"
 	endif
 
-    if has("gui_macvim")
+	if has("gui_macvim")
 		return "mac"
 	endif
-    
+
 	return "linux"
-    endif
 endfunction
 
 " Put the cursor at the end when yanked
@@ -252,7 +259,8 @@ if MySys() == "mac"
 	"set gfn=Envy\ Code\ R:h12
 	"set gfn=Menlo\ Regular:h12
 	"set gfn=PT\ Mono:h13
-	set gfn=Source\ Code\ Pro\ Light:h13
+	"set gfn=Sauce\ Code\ Powerline\ Light:h13
+	set gfn=Sauce\ Code\ Powerline:h13
 
 	"set gfn=M+\ 1m\ Regular:h14
 	"set noantialias
@@ -275,12 +283,13 @@ endif
 
 if has("gui_running")
 	"set guioptions-=TRrLl
-	"set background=dark
+	"set background=light
 	"set t_Co=256
 	set background=dark
 	"colorscheme wombat
 	"colorscheme molokai
 	colorscheme PaperColor
+	"colorscheme two-firewatch
 	"colorscheme molokai
 	"colorscheme hybrid
 	"colorscheme sonofobsidian
@@ -332,6 +341,10 @@ autocmd BufNewFile,BufRead SConstruct :set filetype=scons " define scons
 " set html and jade use space to indention
 autocmd FileType html :setlocal shiftwidth=2 tabstop=2 expandtab
 autocmd FileType jade :setlocal shiftwidth=2 tabstop=2 expandtab
+autocmd FileType yaml :setlocal shiftwidth=2 tabstop=2 expandtab
+
+" set haproxy config
+au BufRead,BufNewFile haproxy* set ft=haproxy
 
 " When editing a file, always jump to the last known cursor position.
 " Don't do it when the position is invalid or when inside an event handler
@@ -833,17 +846,19 @@ autocmd FileType c set omnifunc=ccomplete#Complete
 " NERDTree ********************************************************************
 " http://www.vim.org/scripts/script.php?script_id=1658
 " ver 4.1.0
-let g:NERDTreeIgnore=['\~$', '\.meta$', '\.lo$', '\.o$', '^tags$', '\.dSYM$', 'cscope\.', '^.*_temp$']
+let g:NERDTreeIgnore=['\~$', '\.meta$', '\.lo$', '\.o$', '^tags$', '\.dSYM$', 'cscope\.', '^.*_temp$', '\.DS_Store$', '\.pyc$', '\.git$[[dir]]']
 let g:NERDTreeWinPos="left"
 let g:NERDTreeShowBookmarks=1
-nnoremap <silent> <leader>nt :NERDTreeToggle<CR>
-nnoremap <silent> <leader>nc :call NERDTreeCurrentDir()<CR>
-nnoremap <silent> <leader>nf :NERDTreeFind<CR>
+let g:NERDTreeShowHidden=1
 
 function! NERDTreeCurrentDir()
 	let s:cwd = getcwd()
 	execute "NERDTree " . s:cwd
 endfunction
+
+nnoremap <silent> <leader>nt :NERDTreeToggle<CR>
+nnoremap <silent> <leader>nc :call NERDTreeCurrentDir()<CR>
+nnoremap <silent> <leader>nf :NERDTreeFind<CR>
 
 " Tag List ********************************************************************
 " http://www.vim.org/scripts/script.php?script_id=273
@@ -1031,6 +1046,16 @@ let g:syntastic_error_symbol = "✗"
 let g:syntastic_warning_symbol = "⚠"
 let g:syntastic_always_populate_loc_list = 1
 
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_lua_luac_exec = "luac5.3"
+
 " ultsnips ******************************************************************
 let g:UltiSnipsEditSplit='vertical'
 "let g:UltiSnipsSnippetsDir="~/.vim/bundle/ultisnips/UltiSnips"
@@ -1042,7 +1067,7 @@ let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
 " CtrlP *********************************************************************
 let g:ctrlp_map = '<Leader>ff'
-let g:ctrlp_custom_ignore = '\v\~$|\.(o|swp|pyc|wav|mp3|so|blend)$|(^|[/\\])\.(hg|git|bzr|dSYM)($|[/\\])|__init__\.py'
+let g:ctrlp_custom_ignore = '\v\~$|\.(o|swp|pyc|wav|mp3|so|blend|meta)$|(^|[/\\])\.(hg|git|bzr|dSYM)($|[/\\])|__init__\.py'
 " don't use nearest git root dir for searching dir
 let g:ctrlp_working_path_mode = 'w'
 let g:ctrlp_dotfiles = 0
@@ -1076,6 +1101,7 @@ let g:ctrlp_buftag_types = {
 
 " vim-markdown **************************************************************
 let g:vim_markdown_folding_disabled=1
+autocmd FileType markdown :set conceallevel=0 " we dont want to hide link text
 
 " vim-easytags **************************************************************
 " Let easytags use project's tags file
@@ -1091,3 +1117,19 @@ let g:easytags_async = 1
 
 " vim-go ********************************************************************
 let g:go_fmt_command = "goimports"
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
+let g:go_highlight_interfaces = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
+
+let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
+let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
+
+" vim-airline
+if has("gui_running")
+	let g:airline_powerline_fonts = 1
+endif
+"let g:airline_theme='papercolor'
+let g:airline_theme='luna'
