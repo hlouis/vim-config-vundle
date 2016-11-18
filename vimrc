@@ -4,8 +4,8 @@
 set nocompatible               " be iMproved
 filetype off                   " required!
 
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
 " let Vundle manage Vundle
 " required! 
@@ -112,6 +112,7 @@ Bundle 'digitaltoad/vim-jade'
 " for css less
 Bundle 'groenewege/vim-less'
 
+call vundle#end()            " required
 filetype plugin indent on     " required! 
 "
 " Brief help
